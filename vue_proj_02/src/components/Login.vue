@@ -90,7 +90,7 @@ export default {
           }
           if (val.data.meta.status === 200) {
             this.Message.success(val.data.meta.msg)
-            // 登录成功，储存 token
+            // 登录成功，储存 token , token的sessionStorage 只会在当前页面生效
             window.sessionStorage.setItem('token', val.data.token)
             this.$router.push('/home') // 函数式 跳转至 /home 页面
           }
