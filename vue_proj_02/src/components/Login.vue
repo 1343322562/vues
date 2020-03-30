@@ -70,15 +70,15 @@ export default {
     }
   },
   methods: {
+    // 重置表单
     resetForm () {
-      // 重置表单
       this.$refs.LoginFormRef.resetFields()
     },
+    // 表单预验证
     validaForm () {
-      // 表单验证
       this.$refs.LoginFormRef.validate(valid => {
         console.log(valid)
-        if (!valid) return alert('请输入合法的用户名或密码')
+        if (!valid) return this.Message.warning('请输入正确用户名以及密码')
         this.loading_wait = true
         // 判断登录是否成功
         const loginRes = this.$http.post('login', this.loginFrom)
