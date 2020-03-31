@@ -36,7 +36,7 @@
           <!-- 使用 slot-scope 属性获取当前作用域的数据，并渲染开关 -->
           <!-- 使用 slot-scope 会覆盖 prop 属性-->
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row.id)"></el-switch>
+            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180">
@@ -219,6 +219,12 @@ export default {
   methods: {
     // 获取用户数据
     getUserList() {
+      // 判断是否存在缓存的页码信息，若有，则使用新信息
+      const newPagesize = window.sessionStorage.getItem('newPagesize')
+      const newPagenum = window.sessionStorage.getItem('newPagenum')
+      if (newPagesize) this.queryInfo.pagesize = parseInt(newPagesize)
+      if (newPagenum) this.queryInfo.pagenum = parseInt(newPagenum)
+      // 请求数据
       const res = this.$http.get('users', { params: this.queryInfo })
       res.then(val => {
         if (val.data.meta.status !== 200) return this.Message.error('数据用户列表失败')
@@ -230,12 +236,14 @@ export default {
     // 监听 pagesizes 的改变 ,每页显示条数改动后触发
     handleSizeChange(newsize) {
       console.log(newsize)
+      window.sessionStorage.setItem('newPagesize', newsize) // 保存页码 sessionStorage
       this.queryInfo.pagesize = newsize
       this.getUserList()
     },
     // 监听 页码值 的改变
     handleCurrentChange(newpage) {
       console.log(newpage)
+      window.sessionStorage.setItem('newPagenum', newpage) // 保存页码 sessionStorage
       this.queryInfo.pagenum = newpage
       this.getUserList()
     },
@@ -246,6 +254,7 @@ export default {
         `users/${switchState.id}/state/${switchState.mg_state}`
       )
       res.then(val => {
+        console.log(val)
         if (val.data.meta.status !== 200) {
           switchState.mg_state = !switchState.mg_state
           return this.Message.error('更新用户状态失败')
