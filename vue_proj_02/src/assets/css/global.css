@@ -3,4 +3,17 @@ html,body,#app{
     margin: 0;
     padding: 0;
     height: 100%;
-}   
+}
+
+.box-card {
+    margin-top: 15px;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+.el-table {
+    margin-top: 15px;
+}
+
+.el-pagination {
+    margin-top: 15px;
+}

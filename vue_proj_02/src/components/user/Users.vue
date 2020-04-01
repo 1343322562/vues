@@ -62,11 +62,11 @@
             <el-tooltip
               class="item"
               effect="dark"
-              content="Top Center 提示文字"
+              content="分配角色"
               placement="top"
               enterable
             >
-              <el-button type="danger" icon="el-icon-setting" circle :enterable="enterable"></el-button>
+              <el-button type="danger" icon="el-icon-setting" circle :enterable="enterable" @click="setRole(scope.row)"></el-button>
             </el-tooltip>
             <!-- 使用 slot-scope 必须要使用scope.row ，否则报错 -->
           </template>
@@ -128,6 +128,29 @@
         <el-button type="primary" @click="alterUserInfo">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色的对话框 -->
+    <el-dialog title="分配权限" :visible.sync="showSetDialog" width="50%" @close="resetRoleDialog">
+      <!-- tree 控件区域 -->
+      <div>
+        <p>当前的用户： {{userInfo.username}}</p>
+        <p>当前的角色： {{userInfo.role_name}}</p>
+        <p>
+          <span>分配新角色： </span>
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showSetDialog = false">取 消</el-button>
+        <el-button type="primary" @click="roleUpdata">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -155,9 +178,15 @@ export default {
       callback()
     }
     return {
+      showSetDialog: false, // 控制分配角色对话框的显示与隐藏
       showAlterDialog: false, // 修改用户信息对话框的显示与隐藏
       showAddDialog: false, // 控制添加用户对话框的显示与隐藏
       enterable: false, // tooltip 指针悬停隐藏
+      selectedRoleId: '', // 分配权限已选中的 id 值
+      // 所有角色的数据
+      rolesList: {},
+      // 分配角色时的用户信息
+      userInfo: {},
       // 添加用户的表单数据
       addUsersFrom: {
         username: '',
@@ -341,22 +370,43 @@ export default {
       if (res.meta.status !== 200) return this.Message.error('删除用户失败')
       this.Message.success('删除用户成功')
       this.getUserList()
+    },
+    // 点击分配角色按钮，获取当前角色信息
+    setRole (userInfo) {
+      this.userInfo = userInfo
+      // 获取所有角色列表
+      const res = this.$http.get('roles')
+      res.then(val => {
+        if (val.data.meta.status !== 200) return this.Message.error('获取角色列表失败')
+        this.rolesList = val.data.data
+        console.log(this.rolesList)
+        this.showSetDialog = true
+      })
+    },
+    // 点击按钮，角色信息更改，获取最新数据
+    roleUpdata () {
+      // 用户若没选择，提示用户
+      if (!this.selectedRoleId) {
+        return this.Message.error('请选择需要分配的角色！')
+      }
+      // 发送请求，更新角色信息
+      const res = this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectedRoleId })
+      res.then(val => {
+        console.log(val)
+        if (val.data.meta.status !== 200) return this.Message.error('更新角色失败')
+        this.Message.success('更新角色成功')
+        this.getUserList()
+        this.showSetDialog = false
+      })
+    },
+    // 监听角色分配 Dialog 关闭事件,重置分配角色选项默认值
+    resetRoleDialog () {
+      this.selectedRoleId = ''
+      this.userInfo = {}
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
-.box-card {
-  margin-top: 15px;
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2) !important;
-}
-
-.el-table {
-  margin-top: 15px;
-}
-
-.el-pagination {
-  margin-top: 15px;
-}
 </style>
