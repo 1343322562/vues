@@ -50,7 +50,7 @@
 export default {
   data () {
     return {
-      menulist: [],
+      menulist: [], // 侧边栏数据表单
       isCollapse: false, // 控制侧边栏折叠
       delColTransition: false // 取消侧边栏动画效果，主要是因为动画难看
     }
@@ -60,14 +60,17 @@ export default {
     this.getMenuList() // 获取侧边栏菜单数据
   },
   methods: {
+    // 获取侧边栏数据
     getMenuList () {
       const res = this.$http.get('menus')
       res.then(val => {
+        console.log(val)
         if (val.status !== 200) return this.Message.error(val.data.meta.msg)
         this.menulist = val.data.data
         console.log('data:', val.data.data)
       })
     },
+    // 侧边栏折叠
     toggleCollapse () {
       this.isCollapse = !this.isCollapse
     }

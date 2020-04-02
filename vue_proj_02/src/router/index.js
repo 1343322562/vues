@@ -6,6 +6,7 @@ import Welcome from '../components/Welcome.vue' // 主页
 import Users from '../components/user/Users.vue' // 用户列表组件
 import Rights from '../components/power/Rights.vue' // 权限列表组件
 import Roles from '../components/power/Roles.vue' // 角色列表组件
+import Cate from '../components/goods/Cate.vue' // 角色列表组件
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,7 +20,8 @@ const routes = [
       { path: '/welcome', component: Welcome },
       { path: '/users', component: Users },
       { path: '/rights', component: Rights },
-      { path: '/roles', component: Roles }
+      { path: '/roles', component: Roles },
+      { path: '/categories', component: Cate }
     ]
   }
 ]
@@ -31,7 +33,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.path === '/login') return next()
   const tokenStr = window.sessionStorage.getItem('token')
-  console.log('token:', tokenStr)
+  console.log('token:', Boolean(tokenStr))
   if (!tokenStr) return next('/login')
   next()
 })
