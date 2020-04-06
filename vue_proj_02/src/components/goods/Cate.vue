@@ -71,7 +71,7 @@
         </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showAddCateDialog = false">取 消</el-button>
+        <el-button @click="addCateDialog = false">取 消</el-button>
         <el-button type="primary" @click="addCate">确 定</el-button>
       </span>
     </el-dialog>
@@ -315,8 +315,10 @@ export default {
       if (res.meta.status !== 200) return this.Message.error('删除失败')
       this.Message.success('删除分类成功')
       // 当删除的项为当前页面最后一项时，改变 sessionStorage 中的 page 值，回到上一页面。
+      this.total -= this.total
       if (this.total % this.queryInfo.pagesize === 0) {
         window.sessionStorage.setItem('cateNewPageNum', this.queryInfo.pagenum - 1)
+        console.log(this.queryInfo)
       }
       this.getCateList() // 刷新数据
     }

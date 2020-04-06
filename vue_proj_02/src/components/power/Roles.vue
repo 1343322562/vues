@@ -280,7 +280,7 @@ export default {
         this.showSetDialog = true
       })
     },
-    // 实现默认勾选当前权限。递归获取所有当前节点分配权限的 ID，并保存至 defaultKeys.
+    // 实现默认勾选当前权限。递归获取所有当前节点分配权限的 三级权限的 ID，并保存至 defaultKeys.
     getRightDefaultKeys (arr) {
       for (let i = 0; i < arr.length; i++) {
         // 当 children 未定义时，当前为三级权限，将 id 值推入数组中， 否则再次调用自身
