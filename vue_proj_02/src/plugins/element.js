@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Tabs, TabPane, Alert, Cascader, Option, Select, Tree, Tag, Dialog, Pagination, Tooltip, Switch, Button, Input, Form, FormItem, Row, MessageBox, Message, Container, Aside, Main, Header, Menu, MenuItem, MenuItemGroup, Submenu, Breadcrumb, BreadcrumbItem, Card, Col, Table, TableColumn } from 'element-ui'
+import { Step, Steps, Tabs, TabPane, Alert, Cascader, Option, Select, Tree, Tag, Dialog, Pagination, Tooltip, Switch, Button, Input, Form, FormItem, Row, MessageBox, Message, Container, Aside, Main, Header, Menu, MenuItem, MenuItemGroup, Submenu, Breadcrumb, BreadcrumbItem, Card, Col, Table, TableColumn } from 'element-ui'
 
 Vue.use(Switch)
 Vue.use(Button)
@@ -32,5 +32,7 @@ Vue.use(Cascader)
 Vue.use(Alert)
 Vue.use(TabPane)
 Vue.use(Tabs)
+Vue.use(Steps)
+Vue.use(Step)
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.Message = Message
