@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import './plugins/element.js' // 导入 element ui
 import TreeTable from 'vue-table-with-tree-grid' // 导入 TreeTable 表格组件 （Cate 组件中使用）
+import VueQuillEditor from 'vue-quill-editor' // 导入 富文本编辑器 组件(Add组件用到)
 
 // 导入全局样式
 import './assets/css/global.css'
