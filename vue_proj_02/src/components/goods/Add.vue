@@ -222,6 +222,7 @@ export default {
       const i = this.addForm.pics.findIndex(x => x.pic === filePath) // 返回符合条件的索引值
       this.addForm.pics.splice(i, 1)
     },
+    // 点击发送请求以及商品数据，添加商品
     add () {
       console.log(this.addForm)
       this.$refs.addFormRef.validate(async valid => {
@@ -245,7 +246,7 @@ export default {
         const { data: res } = await this.$http.post('goods', form)
         if (res.meta.status !== 201) return this.Message.error('添加商品失败！')
         this.Message.success('添加商品成功！')
-        this.$router.push('/goods')
+        this.$router.push('/goods') // 跳转商品页面
       })
     }
   },

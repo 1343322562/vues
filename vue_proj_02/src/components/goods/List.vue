@@ -24,7 +24,7 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="goods_name" label="商品名称" width="740"></el-table-column>
         <el-table-column prop="goods_price" label="商品价格(元)" width="80"></el-table-column>
-        <el-table-column prop="goods_weight" label="商品重量" width="80"></el-table-column>
+        <el-table-column prop="goods_weight" label="商品重量(kg)" width="80"></el-table-column>
         <el-table-column prop="add_time" label="创建时间" width="180">
           <!-- 使用全局过滤器(处理时间格式) -->
           <template slot-scope="scope">
@@ -33,7 +33,7 @@
         </el-table-column>
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-setting">编辑</el-button>
+            <el-button type="primary" icon="el-icon-setting" @click="alterGoodInfo(scope.row)">编辑</el-button>
             <el-button type="danger" icon="el-icon-delete" @click="deleteGoodById(scope.row.goods_id)">删除</el-button>
           </template>
         </el-table-column>
@@ -49,6 +49,28 @@
         :total="total"
       ></el-pagination>
     </el-card>
+    <!-- 修改商品信息的 Dialog -->
+    <el-dialog title="编辑商品信息" :visible.sync="alterDialogVisible" width="50%">
+      <!-- 表单区域 -->
+      <el-form :model="alterForm" :rules="alterFormRules" ref="alterFormRef" label-width="100px">
+        <el-form-item label="商品名称" prop="goods_name">
+          <el-input v-model="alterForm.goods_name"></el-input>
+        </el-form-item>
+        <el-form-item type="number" label="商品价格(元)" prop="goods_name">
+          <el-input v-model="alterForm.goods_price"></el-input>
+        </el-form-item>
+        <el-form-item type="number" class="noWarp" label="商品重量(kg)" prop="goods_name">
+          <el-input v-model="alterForm.goods_weight"></el-input>
+        </el-form-item>
+        <el-form-item type="number" label="商品数量" prop="goods_number">
+          <el-input v-model="alterForm.goods_number"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="alterDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="alterGood">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,7 +86,30 @@ export default {
       },
       // 商品列表
       goodsList: [],
-      total: 0 // 总数据条数
+      total: 0, // 总数据条数
+      alterDialogVisible: false, // 控制修改商品信息的对话框
+      // 修改信息表单数据对象
+      alterForm: {
+        goods_id: '',
+        goods_name: '',
+        goods_price: '',
+        good_weight: ''
+      },
+      // 修改信息表单的验证规则
+      alterFormRules: {
+        goods_name: [
+          { required: true, message: '请输入商品名称', trigger: 'blur' }
+        ],
+        goods_price: [
+          { required: true, message: '请输入商品价格', trigger: 'blur' }
+        ],
+        goods_weight: [
+          { required: true, message: '请输入商品重量', trigger: 'blur' }
+        ],
+        goods_number: [
+          { required: true, message: '请输入商品数量', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -119,10 +164,42 @@ export default {
     // 点击跳转添加商品组件
     goAddGood () {
       this.$router.push('/goods/add')
+    },
+    // 监听编辑按钮,导入 scope 数据，并打开 Dialog
+    alterGoodInfo (scope) {
+      this.alterForm.goods_id = scope.goods_id
+      this.alterForm.goods_number = scope.goods_number
+      this.alterForm.goods_name = scope.goods_name
+      this.alterForm.goods_price = scope.goods_price
+      this.alterForm.goods_weight = scope.goods_weight
+      this.alterDialogVisible = true
+    },
+    // 点击发送修改商品请求
+    alterGood () {
+      this.$refs.alterFormRef.validate(async valid => {
+        if (!valid) return
+        this.$confirm('因为 goods页面 获取不到商品分类信息，所以无法实现此功能', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(val => {
+          this.alterDialogVisible = false
+        })
+        // const { data: res } = await this.$http.put('goods/' + this.alterForm.goods_id, {
+        //   goods_name: this.alterForm.goods_name,
+        //   goods_price: this.alterForm.goods_price,
+        //   goods_weight: this.alterForm.goods_weight,
+        //   goods_number: this.alterForm.goods_number
+        // })
+        // console.log(res) 没有后台没有发来分类信息，无法实现此功能
+      })
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
+.noWarp{
+  white-space: nowrap;
+}
 </style>

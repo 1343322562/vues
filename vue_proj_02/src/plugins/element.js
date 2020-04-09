@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import { Upload, CheckboxGroup, Checkbox, Step, Steps, Tabs, TabPane, Alert, Cascader, Option, Select, Tree, Tag, Dialog, Pagination, Tooltip, Switch, Button, Input, Form, FormItem, Row, MessageBox, Message, Container, Aside, Main, Header, Menu, MenuItem, MenuItemGroup, Submenu, Breadcrumb, BreadcrumbItem, Card, Col, Table, TableColumn } from 'element-ui'
-
+// 导入 时间线组件 js 文件(需要手动引入timeline文件夹)
+// 如果 element 版本高于 2.6 则不用导入
+import TimeLineItem from './timeline/index.js'
+import TimeLine from './timeline-item/index.js'
 Vue.use(Switch)
 Vue.use(Button)
 Vue.use(Select)
@@ -37,5 +40,7 @@ Vue.use(Step)
 Vue.use(Checkbox)
 Vue.use(CheckboxGroup)
 Vue.use(Upload)
+Vue.use(TimeLineItem)
+Vue.use(TimeLine)
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.Message = Message
