@@ -20,7 +20,7 @@
         <el-step title="完成"></el-step>
       </el-steps>
       <!-- tabs 栏 (这些数据需要共同发送至后端，需要 form 表单的包裹) -->
-      <el-form v-model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
         <el-tabs :tab-position="'left'" v-model="activeIndex" :before-leave="beforeTabLeave" @tab-click="tabClicked">
           <!-- 商品基本信息区域 -->
           <el-tab-pane label="基本信息" name="0">
@@ -74,7 +74,11 @@
             </el-upload>
           </el-tab-pane>
           <!-- 商品内容区域(引用富文本编辑器) -->
-          <el-tab-pane label="商品内容" name="4">定时任务补偿</el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">
+            <!-- 富文本编辑器区域 -->
+            <quill-editor v-model="addForm.goods_introduce"/>
+            <el-button class="addBtn" type="primary" @click='add'>添加商品</el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-card>
@@ -93,11 +97,13 @@ export default {
       // 添加商品的表单数据对象
       addForm: {
         goods_name: '',
-        goods_price: 0,
-        goods_weight: 0,
-        goods_number: 0,
+        goods_price: '',
+        goods_weight: '',
+        goods_number: '',
         goods_cat: [], // 级联框当前选择的值，为一个数组，最后一项为选中的三级分类 (后台需摇接收以 ',' 号结尾的字符串)
-        pics: [] // 图片上传成功后，储存图片临时地址的数组
+        pics: [], // 图片上传成功后，储存图片临时地址的数组
+        goods_introduce: '', // 富文本编辑器内容(商品内容描述)
+        attrs: [] // 商品参数的数组
       },
       // 添加表单验证规则
       addFormRules: {
@@ -215,8 +221,35 @@ export default {
       const filePath = file.response.data.tmp_path
       const i = this.addForm.pics.findIndex(x => x.pic === filePath) // 返回符合条件的索引值
       this.addForm.pics.splice(i, 1)
+    },
+    add () {
+      console.log(this.addForm)
+      this.$refs.addFormRef.validate(async valid => {
+        console.log('v:', valid)
+        if (!valid) return this.Message.error('请将表单信息填写完整')
+        const goodCatStr = this.addForm.goods_cat.join(',') // 将商品分类信息转成字符串并以逗号链接
+        // 缓存新的请求参数表单对象，并更新分类信息字符串
+        const form = this.addForm
+        form.goods_cat = goodCatStr
+        // 处理动态参数
+        this.manyTabData.forEach(item => {
+          const newInfo = { attr_id: item.attr_id, attr_value: item.attr_vals.join(',') }
+          this.addForm.attrs.push(newInfo)
+        })
+        // 处理静态属性
+        this.onlyTabData.forEach(item => {
+          const newInfo = { attr_id: item.attr_id, attr_value: item.attr_vals }
+          this.addForm.attrs.push(newInfo)
+        })
+        // 发送添加商品请求，商品名称必须唯一
+        const { data: res } = await this.$http.post('goods', form)
+        if (res.meta.status !== 201) return this.Message.error('添加商品失败！')
+        this.Message.success('添加商品成功！')
+        this.$router.push('/goods')
+      })
     }
   },
+  // 点击发送请求，发送商品信息并添加商品。
   computed: {
     // 获取级联选择框的三级分类 ID
     cateID () {
@@ -236,5 +269,9 @@ export default {
 
 .previewImg {
   width: 100%;
+}
+
+.addBtn {
+  margin-top: 15px;
 }
 </style>
