@@ -13,15 +13,27 @@ import 'quill/dist/quill.bubble.css'
 // 导入全局样式
 import './assets/css/global.css'
 
-import axios from 'axios'
+// 导入 nprogress 包，使用其 页面顶部加载条 优化页面
+import NPorigress from 'nprogress'
+import 'nprogress/nprogress.css'
 
+import axios from 'axios'
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/' // 配置请求根路径
+
 // 配置 axios 请求拦截，添加 Token 验证的 Authorization 字段。作用是
 axios.interceptors.request.use(config => {
+  NPorigress.start() // 在 request 拦截器中，展示进度条 NPorigress.start()
   config.headers.Authorization = window.sessionStorage.getItem('token') // 为每一次请求在请求头中挂载 Authorization 字段，即可在以后的请求中授权，提供 token 令牌。
   console.log('头部请求 config(Authorization):', config)
   return config
 })
+
+// 在 response 拦截器中，隐藏进度条 NPorigress.done()
+axios.interceptors.response.use(config => {
+  NPorigress.done()
+  return config
+})
+
 Vue.prototype.$http = axios // 挂载 axios
 
 Vue.config.productionTip = false
