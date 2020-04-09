@@ -34,10 +34,9 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="250">
-          <template slot-scope="scope">
-            {{scope.row}}
-            <el-button type="primary" icon="el-icon-edit" @click="addressBox">编辑地址</el-button>
-            <el-button type="success" icon="el-icon-location" @click="showProgressBox">物流进度</el-button>
+          <template>
+            <el-button size="mini" type="primary" icon="el-icon-edit" @click="addressBox">编辑地址</el-button>
+            <el-button size="mini" type="success" icon="el-icon-location" @click="showProgressBox">物流进度</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,7 +67,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="alterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="alterDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addressValid">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 物流进度  Dialog-->
@@ -113,10 +112,10 @@ export default {
       // 表单验证规则
       alterFormRules: {
         address1: [
-          { requried: true, message: '请选择省市区/县', trigger: 'blur' }
+          { required: true, message: '请选择省市区/县', trigger: 'blur' }
         ],
         address2: [
-          { requried: true, message: '请输入详细地址', trigger: 'blur' }
+          { required: true, message: '请输入详细地址', trigger: 'blur' }
         ]
       },
       // 引入省市区/县
@@ -163,6 +162,14 @@ export default {
       this.progressInfo = res.data
       this.progressDialogVisible = true
       console.log(this.progressInfo)
+    },
+    // 选择地址表单预验证
+    addressValid () {
+      this.$refs.alterFormRef.validate(valid => {
+        if (!valid) return
+        this.Message.success('修改成功')
+        this.alterDialogVisible = false
+      })
     }
   }
 }
