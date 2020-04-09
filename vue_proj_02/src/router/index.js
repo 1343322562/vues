@@ -11,6 +11,7 @@ import Params from '../components/goods/Params.vue' // 角色列表组件
 import GoodsList from '../components/goods/List.vue' // 商品列表组件
 import Add from '../components/goods/Add.vue' // 商品列表组件
 import Order from '../components/order/Order.vue' // 订单列表组件
+import Report from '../components/report/Report.vue' // 数据报表组件
 Vue.use(VueRouter)
 
 const routes = [
@@ -30,7 +31,8 @@ const routes = [
       { path: '/goods', component: GoodsList },
       { path: '/goods', component: GoodsList },
       { path: '/goods/add', component: Add },
-      { path: '/orders', component: Order }
+      { path: '/orders', component: Order },
+      { path: '/reports', component: Report }
     ]
   }
 ]
