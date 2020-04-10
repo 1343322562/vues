@@ -17,6 +17,8 @@ module.exports = {
       }
     ],
     // 发布产品时的插件数组，去除了 console 函数
-    ...prodPligins
+    ...prodPligins,
+    // 路由懒加载 插件
+    '@babel/plugin-syntax-dynamic-import'
   ]
 }

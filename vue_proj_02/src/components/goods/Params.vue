@@ -220,15 +220,14 @@ export default {
     },
     // 重置表单数据
     resetForm () {
+      // 两份 Dialog 共用一个事件
       try {
         this.$refs.addFormRef.resetFields()
-        this.Message.info('已取消添加')
       } catch (error) {
         console.log(error, 'addFormRef 未被渲染(修改商品分类信息的 Dialog 未被渲染)')
       }
       try {
         this.$refs.alterFormRef.resetFields()
-        this.Message.info('已取消修改')
       } catch (error) {
         console.log(error, 'alterFormRules 未被渲染(修改商品分类信息的 Dialog 未被渲染)')
       }
